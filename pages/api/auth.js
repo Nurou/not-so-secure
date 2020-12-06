@@ -17,7 +17,7 @@ const saltRounds = 10;
 const dbName = './vulnerable.sqlite';
 
 async function findUser(db, username) {
-  /* Warning: ripe for injection! *cough* 'OR 1=1'*/
+  /* Warning: ripe for injection! */
   const user = await db.get(SQL`select * from patient where username = ${username}`);
   // const user = await db.get('select * from patient where username = ?', [username]);
 

@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 /* Warning: another exposed secret */
 const jwtSecret = 'THISISSOSECRET';
 
+import SQL from 'sql-template-strings';
+
 export default async (req, res) => {
   if (req.method === 'POST') {
     if (!('token' in req.cookies)) {
@@ -29,11 +31,15 @@ export default async (req, res) => {
       const db = await sqlite.open('./vulnerable.sqlite');
       // get user doctor
       const doctor = await db.get('select * from doctor where patientId = ?', [req.body.id]);
-      const message = await db.run('INSERT INTO SOS (patient_id, doctor_id, message) VALUES (?, ?, ?)', [
-        req.body.id,
-        doctor.id,
-        req.body.message,
-      ]);
+      /* Warning: use this instead */
+      // const message = await db.run('INSERT INTO SOS (patient_id, doctor_id, message) VALUES (?, ?, ?)', [
+      //   req.body.id,
+      //   doctor.id,
+      //   req.body.message,
+      // ]);
+      const message = await db.run(
+        SQL`INSERT INTO SOS (patient_id, doctor_id, message) VALUES (${req.body.id}, ${doctor.id}, ${req.body.message})`
+      );
       res.status(200).json({ message });
       return;
     } else {
