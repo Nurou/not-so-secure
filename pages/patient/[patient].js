@@ -73,7 +73,9 @@ export default function Patient() {
           <textarea name='message' onChange={(e) => setMessage(e.target.value)} value={message} rows='4' cols='50'>
             {message}
           </textarea>
-          <button type='submit'>Send</button>
+          <button type='submit' style={{ display: 'block' }}>
+            Send
+          </button>
         </div>
       </form>
       <h3>What you've sent: </h3>

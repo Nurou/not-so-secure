@@ -75,7 +75,6 @@ export default async (req, res) => {
         const token = jwt.sign(payloadObject, jwtSecret, {
           expiresIn: 3000, //50 minutes
         });
-        console.log('💩 ~ file: auth.js ~ line 77 ~ token', token);
         // const token = jwt.sign({ userId: user.userId, username: user.username }, process.env.JWT_SECRET, {
         //   expiresIn: 3000, //50 minutes
         // });
