@@ -9,6 +9,9 @@ async function setup() {
 
   const doctors = await db.all('SELECT * FROM Doctor');
   console.log('ALL Doctors', JSON.stringify(doctors, null, 2));
+
+  const messages = await db.all('SELECT * FROM Sos');
+  console.log('ALL Messages', JSON.stringify(messages, null, 2));
 }
 
 setup();

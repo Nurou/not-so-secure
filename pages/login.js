@@ -24,7 +24,6 @@ const Login = () => {
         return r.json();
       })
       .then((data) => {
-        console.log('💩 ~ file: login.js ~ line 27 ~ data', data);
         if (data && data.error) {
           setLoginError(data.message);
         }

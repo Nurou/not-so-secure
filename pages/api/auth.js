@@ -6,11 +6,14 @@ import SQL from 'sql-template-strings';
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
+/* Should this be here!? */
 const jwtSecret = 'THISISSOSECRET';
+
+// for salty passwords
 const saltRounds = 10;
 
 /* Warning: hardcoded db name */
-
 const dbName = './vulnerable.sqlite';
 
 async function findUser(db, username) {
@@ -33,7 +36,13 @@ async function findUser(db, username) {
 }
 
 function authUser(password, hash, callback) {
-  bcrypt.compare(password, hash, callback);
+  if (password === hash) {
+    callback(false, true);
+  } else {
+    callback(true, null);
+  }
+
+  // bcrypt.compare(password, hash, callback);
 }
 
 export default async (req, res) => {
@@ -56,16 +65,20 @@ export default async (req, res) => {
     res.status(404).json({ error: true, message: 'User not found' });
   } else {
     authUser(password, user.password, function (err, match) {
-      console.log('💩 ~ file: auth.js ~ line 59 ~ match', match);
       if (err) {
         res.status(500).json({ error: true, message: 'Auth Failed' });
+        return;
       }
       // user found & retrieved
       if (match) {
-        console.log('💩 ~ file: auth.js ~ line 63 ~ match', match);
-        const token = jwt.sign({ userId: user.userId, username: user.username }, jwtSecret, {
+        const payloadObject = { userId: user.userId, username: user.username };
+        const token = jwt.sign(payloadObject, jwtSecret, {
           expiresIn: 3000, //50 minutes
         });
+        console.log('💩 ~ file: auth.js ~ line 77 ~ token', token);
+        // const token = jwt.sign({ userId: user.userId, username: user.username }, process.env.JWT_SECRET, {
+        //   expiresIn: 3000, //50 minutes
+        // });
         res.status(200).json({ token });
         return;
       } else {
@@ -74,6 +87,4 @@ export default async (req, res) => {
       }
     });
   }
-
-  // res.status(200).json({ user });
 };
